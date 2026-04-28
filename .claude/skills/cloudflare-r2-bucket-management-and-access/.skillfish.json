@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "cloudflare-r2-bucket-management-and-access",
+  "owner": "agentivecity",
+  "repo": "skillfactory",
+  "path": ".claude/skills/cloudflare-r2-bucket-management-and-access",
+  "branch": "main",
+  "sha": "5225b7756b673efbed8bef6abb1a1868ff8031bf",
+  "source": "manual"
+}

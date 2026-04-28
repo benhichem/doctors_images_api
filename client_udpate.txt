@@ -1,0 +1,55 @@
+  ---
+  Project Update — Doctors API
+
+  We have made solid progress on the backend infrastructure for the doctor data pipeline.
+  Here's a summary of what's been completed:
+
+  Data Ingestion
+  - Set up a streaming CSV parser that efficiently processes the NPI (National Provider
+  Identifier) dataset — a federal registry of over 7 million healthcare providers — without
+  loading it all into memory at once.
+  - Fully typed every field from the NPI data source (370+ fields) in TypeScript for
+  reliability and autocomplete support.
+
+  Database
+  - Configured a PostgreSQL database with a migration system for structured, versioned schema
+   changes.
+  - Built a seed script that reads the NPI CSV and populates the database.
+
+  API
+  - Built a REST API (using Bun) with endpoints to look up doctors by ID — single and batch
+  lookups (up to 10 at a time).
+  - Input validation and structured error responses are in place.
+
+  Doctor Search on WebMD
+  - Built a search query builder that takes any doctor record from the NPI dataset and
+  produces a ready-to-use WebMD doctor search URL.
+  - Integrated automatic geocoding via the US Census API — the system looks up the doctor's
+  practice address and converts it to coordinates, which WebMD requires for location-based
+  results.
+  - This sets the foundation for the Puppeteer-based scraping script that will search and
+  match doctors on WebMD.
+
+  Search Validation
+
+  After building the WebMD search query for each doctor, the system runs a validation
+  pipeline to determine whether the search results actually correspond to the correct
+  provider. Each NPI record is searched against WebMD's API and the returned results are
+  scored using a name similarity algorithm (≥80% character match) combined with a state
+  match. Based on that, every result is saved to the database with one of three confidence
+   flags:
+
+  - matched — exactly one WebMD result passed validation. The name closely matches the NPI
+   record and the practice state aligns. This is the cleanest outcome and the result is
+  saved with high confidence.
+  - multiple — more than one WebMD result passed validation for the same doctor. This can
+  happen with common names or providers practicing in multiple locations. The first
+  matching result is saved, but the flag signals that the match may need manual review
+  before being relied on.
+  - unmatched — either WebMD returned no results at all, or none of the results passed the
+   name/state validation. The record is saved with a null WebMD URL, indicating the doctor
+   was not found or could not be confidently identified.
+
+
+
+
