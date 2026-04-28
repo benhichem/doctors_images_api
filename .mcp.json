@@ -2,7 +2,14 @@
   "mcpServers": {
     "cloudflare": {
       "command": "/home/panic/.bun/bin/mcp-server-cloudflare",
-      "args": ["run", "48136de31d8694c241e8554682e77548"]
+      "args": [
+        "run",
+        "48136de31d8694c241e8554682e77548"
+      ]
+    },
+    "supabase": {
+      "type": "http",
+      "url": "https://mcp.supabase.com/mcp?project_ref=dqdjiakaflsnrmzlktni"
     }
   }
 }

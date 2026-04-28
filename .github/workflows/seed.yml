@@ -16,21 +16,6 @@ jobs:
   seed:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:17
-        env:
-          POSTGRES_USER: admin
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: mydb
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 10
-        ports:
-          - 5432:5432
-
     steps:
       - uses: actions/checkout@v4
 
@@ -56,7 +41,7 @@ jobs:
       - name: Run migrations
         run: bun run migrate
         env:
-          DATABASE_URL: postgresql://admin:password@localhost:5432/mydb
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Run seed
         run: |
@@ -67,7 +52,7 @@ jobs:
           ARGS="$ARGS --concurrency=${{ inputs.concurrency }}"
           bun run seed $ARGS
         env:
-          DATABASE_URL: postgresql://admin:password@localhost:5432/mydb
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           IMAGE_STORAGE_BACKEND: r2
           R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
