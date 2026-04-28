@@ -1,0 +1,49 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bun init *)",
+      "Bash(bun add *)",
+      "mcp__context7__resolve-library-id",
+      "WebFetch(domain:npiregistry.cms.hhs.gov)",
+      "Bash(bun tsc *)",
+      "WebFetch(domain:download.cms.gov)",
+      "Bash(bun *)",
+      "Bash(fuser *)",
+      "mcp__context7__query-docs",
+      "WebFetch(domain:mcpmarket.com)",
+      "WebSearch",
+      "Bash(curl -s \"https://raw.githubusercontent.com/cloudflare/skills/main/skills/cloudflare-r2-bucket-management-access/SKILL.md\")",
+      "Bash(curl -s \"https://api.github.com/repos/cloudflare/skills/contents/skills\")",
+      "Bash(python3 -c \"import json,sys; data=json.load\\(sys.stdin\\); [print\\(d['name']\\) for d in data if isinstance\\(data, list\\)]\")",
+      "Bash(curl -s \"https://api.github.com/repos/cloudflare/skills/contents/skills/cloudflare\")",
+      "Bash(curl -s \"https://raw.githubusercontent.com/theprimeagen/skills/master/skills/cloudflare-r2/SKILL.md\")",
+      "Bash(curl -s \"https://raw.githubusercontent.com/cloudflare/skills/main/skills/cloudflare/SKILL.md\")",
+      "Bash(curl -s \"https://api.github.com/search/repositories?q=mcpmarket+skills&sort=stars\")",
+      "Bash(python3 -c \"import json,sys; data=json.load\\(sys.stdin\\); [print\\(r['full_name'], r['html_url']\\) for r in data.get\\('items', []\\)[:10]]\")",
+      "Bash(curl -s \"https://api.github.com/repos/knoxgraeme/mcpmarket-plugin/contents/\")",
+      "Bash(curl -s \"https://api.github.com/repos/jezweb/claude-skills/contents/skills\")",
+      "Bash(python3 -c \"import json,sys; data=json.load\\(sys.stdin\\); [print\\(d['name']\\) for d in data if isinstance\\(data, list\\) and 'r2' in d['name'].lower\\(\\)]\")",
+      "Bash(curl -s \"https://api.github.com/repos/knoxgraeme/mcpmarket-plugin/contents/skills\")",
+      "Bash(python3 -c \"import json,sys; data=json.load\\(sys.stdin\\); print\\(type\\(data\\), str\\(data\\)[:500]\\)\")",
+      "Bash(curl *)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(json.dumps\\(d.get\\('mcpServers', {}\\), indent=2\\)\\)\")",
+      "Bash(bunx --version)",
+      "Bash(bunx @cloudflare/mcp-server-cloudflare --help)",
+      "mcp__cloudflare__r2_list_buckets",
+      "Read(//home/panic/.config/.wrangler/config/**)",
+      "Read(//home/panic/.wrangler/config/**)",
+      "Read(//home/panic/.config/**)",
+      "Bash(npx wrangler *)",
+      "Bash(git fetch *)",
+      "Bash(git rm *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(gh release *)"
+    ]
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "cloudflare"
+  ]
+}

@@ -1,4 +1,4 @@
-import { createReadStream } from "node:fs";
+import { createReadStream, readdirSync } from "node:fs";
 import { createInterface } from "node:readline";
 import type { NPIRecord } from "./npi.types";
 import { runWorker } from "../../scraper/worker";
@@ -48,7 +48,11 @@ export async function* streamNPIRecords(filePath: string): AsyncGenerator<NPIRec
 
 const CONCURRENCY = parseInt(process.argv.find((a) => a.startsWith("--concurrency="))?.split("=")[1] ?? "3");
 const LIMIT = parseInt(process.argv.find((a) => a.startsWith("--limit="))?.split("=")[1] ?? "0");
-const FILE_PATH = "./src/db/seed/db_source/npidata_pfile_20260406-20260412.csv";
+
+const DB_SOURCE_DIR = "./src/db/seed/db_source";
+const csvFiles = readdirSync(DB_SOURCE_DIR).filter((f) => f.endsWith(".csv"));
+if (csvFiles.length === 0) throw new Error(`No CSV file found in ${DB_SOURCE_DIR}`);
+const FILE_PATH = `${DB_SOURCE_DIR}/${csvFiles[0]}`;
 
 async function main() {
     const startTime = Date.now();

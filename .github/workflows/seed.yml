@@ -38,12 +38,15 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Download NPI CSV from release assets
+      - name: Download and extract NPI CSV from release assets
         run: |
           mkdir -p src/db/seed/db_source
           gh release download seed-data \
-            --pattern "npidata_pfile_*.csv" \
+            --pattern "npidata_pfile_*.zip" \
             --dir src/db/seed/db_source
+          unzip -o src/db/seed/db_source/npidata_pfile_*.zip \
+            -d src/db/seed/db_source
+          rm src/db/seed/db_source/*.zip
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
