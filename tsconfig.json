@@ -3,7 +3,7 @@
     // Environment setup & latest features
     "lib": [
       "ESNext",
-      "DOM"
+      "DOM",
     ],
     "target": "ESNext",
     "module": "Preserve",

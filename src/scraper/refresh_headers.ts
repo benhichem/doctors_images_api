@@ -1,5 +1,6 @@
 import { config } from "../config/index.js";
 import { launchBrowser, closeBrowser } from "./browser.js";
+import { readFileSync, writeFileSync } from "node:fs";
 
 const SEARCH_URL =
   "https://doctor.webmd.com/results?q=John+Smith&state=NY&city=New+York&d=40&sortby=bestmatch&entity=all&gender=all&nameSearch=true";
@@ -59,12 +60,13 @@ export async function refreshHeaders(): Promise<void> {
     }
 
     let env = "";
-    try { env = await Bun.file(ENV_PATH).text(); } catch { /* no .env yet */ }
+    try { env = readFileSync(ENV_PATH, "utf-8"); } catch { /* no .env yet */ }
+
 
     env = upsertEnvVar(env, "WEBMD_CLIENT_ID", captured.clientId);
     env = upsertEnvVar(env, "WEBMD_ENC_DATA", captured.encData);
     env = upsertEnvVar(env, "WEBMD_TIMESTAMP", captured.timestamp);
-    await Bun.write(ENV_PATH, env);
+    writeFileSync(ENV_PATH, env);
 
     // Apply to current process immediately so workers don't need a restart.
     config.WEBMD_CLIENT_ID = captured.clientId;

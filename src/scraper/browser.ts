@@ -4,7 +4,7 @@ export type BrowserSession = Awaited<ReturnType<typeof connect>>;
 
 export async function launchBrowser(): Promise<BrowserSession> {
   return connect({
-    headless: false,
+    headless: true,
     args: ["--no-sandbox"],
     customConfig: {},
     turnstile: true,
