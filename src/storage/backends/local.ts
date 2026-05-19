@@ -1,8 +1,9 @@
+import { config } from "../../config/index.js";
 import type { ImageStorage } from "../types";
 
 export function makeLocalStorage(): ImageStorage {
-  const dir  = process.env.LOCAL_IMAGE_DIR     ?? "images";
-  const base = process.env.LOCAL_IMAGE_BASE_URL ?? "/images";
+  const dir = config.local_image_dir ?? "images";
+  const base = config.local_image_base_url ?? "/images";
 
   // ensure directory exists at startup
   Bun.$`mkdir -p ${dir}`.quiet();

@@ -1,8 +1,8 @@
-import { extractDoctorResults, type WebMDResult } from "./extractor";
-import { validateMatch } from "./validator";
-import { buildWebMDSearchQuery } from "../search/webmd";
-import { db } from "../db";
-import { imageStorage } from "../storage";
+import { extractDoctorResults, type WebMDResult } from "./extractor.js";
+import { validateMatch } from "./validator.js";
+import { buildWebMDSearchQuery } from "../search/webmd.js";
+import { db } from "../db/index.js";
+import { imageStorage } from "../storage/index.js";
 import type { NPIRecord } from "../db/seed/npi.types";
 
 export async function runWorker(jobs: AsyncIterator<NPIRecord>): Promise<void> {
@@ -72,7 +72,7 @@ async function downloadImage(npi: string, url: string): Promise<string | null> {
   }
 }
 
-async function saveResult(
+/* async function saveResult(
   npi: string,
   result: WebMDResult | null,
   confidence: "matched" | "unmatched" | "multiple"
@@ -108,5 +108,47 @@ async function saveResult(
       image_url        = EXCLUDED.image_url,
       webmd_image_url  = EXCLUDED.webmd_image_url
   `;
+  console.log(`[worker] saved       NPI: ${npi} — confidence: ${confidence}`);
+}
+ */
+
+async function saveResult(
+  npi: string,
+  result: WebMDResult | null,
+  confidence: "matched" | "unmatched" | "multiple"
+): Promise<void> {
+  const url = result?.providerurl ?? result?.provider_url_s ?? null;
+  const webmdImageUrl = result?.photourl || null;
+  const localImagePath = webmdImageUrl ? await downloadImage(npi, webmdImageUrl) : null;
+
+  await db.query(
+    `INSERT INTO doctors (npi, webmd_url, name, specialty, city, state, rating, match_confidence, about, image_url, webmd_image_url)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+     ON CONFLICT (npi) DO UPDATE SET
+       webmd_url        = EXCLUDED.webmd_url,
+       name             = EXCLUDED.name,
+       specialty        = EXCLUDED.specialty,
+       city             = EXCLUDED.city,
+       state            = EXCLUDED.state,
+       rating           = EXCLUDED.rating,
+       match_confidence = EXCLUDED.match_confidence,
+       about            = EXCLUDED.about,
+       image_url        = EXCLUDED.image_url,
+       webmd_image_url  = EXCLUDED.webmd_image_url`,
+    [
+      npi,
+      url,
+      result?.fullname ?? null,
+      result?.primaryspecialty_nis ?? null,
+      result?.city ?? null,
+      result?.state ?? null,
+      result?.c1_avg_f ?? null,
+      confidence,
+      result?.bio_s ?? "",
+      localImagePath,
+      webmdImageUrl,
+    ]
+  );
+
   console.log(`[worker] saved       NPI: ${npi} — confidence: ${confidence}`);
 }

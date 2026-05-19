@@ -4,9 +4,9 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "start": "bun src/index.ts",
-    "seed": "bun src/db/seed/index.ts",
-    "migrate": "bun src/db/migrate.ts"
+    "start": "node dist/index.js",
+    "seed": "node dist/db/seed/index.js",
+    "migrate": "node dist/db/migrate.js"
   },
   "devDependencies": {
     "@types/bun": "latest"
@@ -15,7 +15,12 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1049.0",
+    "@hono/node-server": "^2.0.3",
+    "@types/pg": "^8.20.0",
+    "dotenv": "^17.4.2",
     "hono": "^4.12.14",
+    "pg": "^8.21.0",
     "puppeteer": "^24.41.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",

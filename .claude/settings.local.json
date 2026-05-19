@@ -44,7 +44,18 @@
       "mcp__supabase__list_tables",
       "mcp__supabase__list_migrations",
       "mcp__supabase__apply_migration",
-      "mcp__supabase__get_project_url"
+      "mcp__supabase__get_project_url",
+      "Bash(gh auth *)",
+      "Bash(gh secret *)",
+      "Bash(DATABASE_URL=\"postgresql://postgres:0549125549aa@db.dqdjiakaflsnrmzlktni.supabase.co:5432/postgres\" bun run *)",
+      "Bash(psql \"postgresql://postgres:0549125549aa@db.dqdjiakaflsnrmzlktni.supabase.co:5432/postgres?sslmode=require\" -c \"SELECT 1\")",
+      "mcp__supabase__execute_sql",
+      "Bash(host *)",
+      "Bash(dig *)",
+      "Bash(getent hosts *)",
+      "Bash(DATABASE_URL=\"postgresql://postgres.dqdjiakaflsnrmzlktni:0549125549aa@aws-0-eu-west-1.pooler.supabase.com:5432/postgres\" bun run *)",
+      "mcp__supabase__get_publishable_keys",
+      "Bash(python3 *)"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -1,5 +1,5 @@
 import type { Context } from "hono";
-import { doctorService } from "../services/doctor.service";
+import { doctorService } from "../services/doctor.service.js";
 
 const MAX_NPIS = 10;
 const NPI_REGEX = /^\d{10}$/;
@@ -15,6 +15,7 @@ const errorResponse = (
 export const doctorController = {
   async getOne(c: Context) {
     const npi = c.req.param("npi");
+    if (typeof npi !== "string") return errorResponse(c, 400, "MISSING_NPI", "NPI parameter is required in the URL path, e.g. /doctors/1234567890");
     if (!NPI_REGEX.test(npi))
       return errorResponse(c, 400, "INVALID_NPI", "NPI must be a 10-digit numeric string");
 

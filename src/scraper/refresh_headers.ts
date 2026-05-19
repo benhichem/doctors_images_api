@@ -1,4 +1,5 @@
-import { launchBrowser, closeBrowser } from "./browser";
+import { config } from "../config/index.js";
+import { launchBrowser, closeBrowser } from "./browser.js";
 
 const SEARCH_URL =
   "https://doctor.webmd.com/results?q=John+Smith&state=NY&city=New+York&d=40&sortby=bestmatch&entity=all&gender=all&nameSearch=true";
@@ -35,8 +36,8 @@ export async function refreshHeaders(): Promise<void> {
       client.on("Network.requestWillBeSent", (event: any) => {
         if (!event.request.url.includes("kapi/secure/search/care/allresults")) return;
         const h = event.request.headers;
-        captured.clientId  = h["client_id"];
-        captured.encData   = h["enc_data"];
+        captured.clientId = h["client_id"];
+        captured.encData = h["enc_data"];
         captured.timestamp = h["timestamp"];
         console.log(`[refresh] intercepted — client_id: ${captured.clientId} | timestamp: ${captured.timestamp}`);
       });
@@ -61,14 +62,14 @@ export async function refreshHeaders(): Promise<void> {
     try { env = await Bun.file(ENV_PATH).text(); } catch { /* no .env yet */ }
 
     env = upsertEnvVar(env, "WEBMD_CLIENT_ID", captured.clientId);
-    env = upsertEnvVar(env, "WEBMD_ENC_DATA",  captured.encData);
-    env = upsertEnvVar(env, "WEBMD_TIMESTAMP",  captured.timestamp);
+    env = upsertEnvVar(env, "WEBMD_ENC_DATA", captured.encData);
+    env = upsertEnvVar(env, "WEBMD_TIMESTAMP", captured.timestamp);
     await Bun.write(ENV_PATH, env);
 
     // Apply to current process immediately so workers don't need a restart.
-    process.env.WEBMD_CLIENT_ID = captured.clientId;
-    process.env.WEBMD_ENC_DATA  = captured.encData;
-    process.env.WEBMD_TIMESTAMP = captured.timestamp;
+    config.WEBMD_CLIENT_ID = captured.clientId;
+    config.WEBMD_ENC_DATA = captured.encData;
+    config.WEBMD_TIMESTAMP = captured.timestamp;
 
     console.log("[refresh] headers updated successfully");
   })().finally(() => { refreshLock = null; });

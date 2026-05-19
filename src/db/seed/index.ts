@@ -1,7 +1,7 @@
 import { createReadStream, readdirSync } from "node:fs";
 import { createInterface } from "node:readline";
 import type { NPIRecord } from "./npi.types";
-import { runWorker } from "../../scraper/worker";
+import { runWorker } from "../../scraper/worker.js";
 
 function parseCSVLine(line: string): string[] {
     const fields: string[] = [];

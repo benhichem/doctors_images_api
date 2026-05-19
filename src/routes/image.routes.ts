@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { imageStorage } from "../storage";
+import { imageStorage } from "../storage/index.js";
 
 export const imageRoutes = new Hono();
 

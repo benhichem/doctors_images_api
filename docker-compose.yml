@@ -15,7 +15,7 @@ services:
 
   api:
     build: .
-    command: sh -c "bun run migrate && bun run start"
+    command: sh -c "npm run migrate && npm run start"
     env_file: .env
     environment:
       DATABASE_URL: postgresql://admin:password@postgres:5432/mydb
@@ -31,7 +31,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.seed
-    command: bun run seed
+    command: npm run seed
     env_file: .env
     environment:
       DATABASE_URL: postgresql://admin:password@postgres:5432/mydb

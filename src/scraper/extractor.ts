@@ -1,4 +1,4 @@
-import { refreshHeaders } from "./refresh_headers";
+import { refreshHeaders } from "./refresh_headers.js";
 
 function getHeaders() {
   return {

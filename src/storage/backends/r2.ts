@@ -1,17 +1,14 @@
+/* import { config } from "../../config/index.js";
 import type { ImageStorage } from "../types";
 
-function requireEnv(key: string): string {
-  const val = process.env[key];
-  if (!val) throw new Error(`Missing required env var for R2 storage: ${key}`);
-  return val;
-}
+
 
 export function makeR2Storage(): ImageStorage {
-  const accountId   = requireEnv("R2_ACCOUNT_ID");
-  const accessKeyId = requireEnv("R2_ACCESS_KEY_ID");
-  const secretKey   = requireEnv("R2_SECRET_ACCESS_KEY");
-  const bucket      = requireEnv("R2_BUCKET_NAME");
-  const publicBase  = requireEnv("R2_PUBLIC_BASE_URL");
+  const accountId = config.r2_account_id;
+  const accessKeyId = config.r2_access_key;
+  const secretKey = config.r2_secret_key;
+  const bucket = config.r2_bucket_name;
+  const publicBase = config.r2_public_base_url;
 
   const client = new Bun.S3Client({
     accessKeyId,
@@ -37,6 +34,64 @@ export function makeR2Storage(): ImageStorage {
 
     async delete(npi) {
       await client.delete(`${npi}.jpg`);
+    },
+  };
+}
+ */
+
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { config } from "../../config/index.js";
+import type { ImageStorage } from "../types";
+
+export function makeR2Storage(): ImageStorage {
+  const accountId = config.r2_account_id;
+  const accessKeyId = config.r2_access_key;
+  const secretKey = config.r2_secret_key;
+  const bucket = config.r2_bucket_name;
+  const publicBase = config.r2_public_base_url;
+
+  if (!accountId || !accessKeyId || !secretKey || !bucket || !publicBase) {
+    throw new Error("Missing R2 configuration values");
+  }
+
+  const client = new S3Client({
+    region: "auto",
+    endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
+    credentials: {
+      accessKeyId,
+      secretAccessKey: secretKey,
+    },
+  });
+
+  return {
+    publicUrl: (npi) => `${publicBase}/${npi}.jpg`,
+
+    async store(npi, source) {
+      try {
+        const body = Buffer.from(await source.arrayBuffer());
+        await client.send(
+          new PutObjectCommand({
+            Bucket: bucket,
+            Key: `${npi}.jpg`,
+            Body: body,
+            ContentType: "image/jpeg",
+          })
+        );
+        console.log(`[storage] r2         NPI: ${npi} — uploaded`);
+        return `${publicBase}/${npi}.jpg`;
+      } catch (err) {
+        console.log(`[storage] r2         NPI: ${npi} — upload failed: ${err}`);
+        return null;
+      }
+    },
+
+    async delete(npi) {
+      await client.send(
+        new DeleteObjectCommand({
+          Bucket: bucket,
+          Key: `${npi}.jpg`,
+        })
+      );
     },
   };
 }
